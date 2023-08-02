@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const app = express()
 const port = process.env.PORT || 3000;
+const fs = require('fs')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -25,7 +26,15 @@ const adapter = new BotFrameworkAdapter({
     appPassword: process.env.MicrosoftAppPassword,
 });
 
-const conversationReferences = {};
+let conversationReferences = {};
+try {
+    let rawdata = fs.readFileSync('conv.json');
+    let conv = JSON.parse(rawdata);
+    conversationReferences = conv;
+} catch (err) {
+    console.error(err);
+    conversationReferences = {};
+}
 const bot = new TeamsBot(conversationReferences);
 
 adapter.onTurnError = async (context, error) => {

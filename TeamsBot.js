@@ -1,10 +1,13 @@
 const { TeamsActivityHandler, TurnContext } = require("botbuilder");
+const fs = require('fs')
 
 class TeamsBot extends TeamsActivityHandler {
   constructor(conversationReferences) {
     super();
     // Dependency injected dictionary for storing ConversationReference objects used in NotifyController to proactively message users
+    
     this.conversationReferences = conversationReferences;
+    
 
     this.onConversationUpdate(async (context, next) => {
       this.addConversationReference(context.activity);
@@ -40,6 +43,7 @@ class TeamsBot extends TeamsActivityHandler {
   addConversationReference(activity) {
     const conversationReference = TurnContext.getConversationReference(activity);
     this.conversationReferences[conversationReference.conversation.id] = conversationReference;
+    fs.writeFileSync('conv.json', JSON.stringify(this.conversationReferences))
   }
 
 }
