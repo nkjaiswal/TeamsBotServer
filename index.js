@@ -16,6 +16,7 @@ app.post("/auth-end", (req, res) => {
     if(!token) {
       return res.json({});
     }
+    console.log(token);
     const user = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
     res.json(user);
 });
@@ -42,7 +43,9 @@ adapter.onTurnError = async (context, error) => {
 };
 
 app.post("/api/messages", async (req, res) => {
+  console.log("/api/message called");
     await adapter.processActivity(req, res, async (context) => {
+      console.log("processActivity completed");
       await bot.run(context);
     });
 });
